@@ -1,11 +1,10 @@
-"use client";
-
 import type React from "react";
-
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import { User, School, Mail, Lock } from "lucide-react";
 import { registerAdmin } from "../../api";
+import SubmitButton from "../Shared/SubmitButton";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -27,15 +26,6 @@ const RegisterForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      !formData.name ||
-      !formData.schoolName ||
-      !formData.email ||
-      !formData.password
-    ) {
-      toast.error("Please fill in all fields");
-      return;
-    }
 
     if (formData.password.length < 6) {
       toast.error("Password must be at least 6 characters");
@@ -89,19 +79,7 @@ const RegisterForm = () => {
                 placeholder="Enter your full name"
                 required
               />
-              <svg
-                className="absolute left-4 top-3.5 w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
+              <User className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" />
             </div>
           </div>
 
@@ -119,19 +97,7 @@ const RegisterForm = () => {
                 placeholder="Enter school name"
                 required
               />
-              <svg
-                className="absolute left-4 top-3.5 w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                />
-              </svg>
+              <School className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" />
             </div>
           </div>
 
@@ -149,19 +115,7 @@ const RegisterForm = () => {
                 placeholder="Email"
                 required
               />
-              <svg
-                className="absolute left-4 top-3.5 w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
-                />
-              </svg>
+              <Mail className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" />
             </div>
           </div>
 
@@ -179,55 +133,11 @@ const RegisterForm = () => {
                 placeholder="Create a password (min 6 characters)"
                 required
               />
-              <svg
-                className="absolute left-4 top-3.5 w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>
+              <Lock className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" />
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-gray-800 text-white py-3 px-4 rounded-xl font-semibold hover:bg-gray-900 transform hover:scale-[1.02] transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Creating Account...
-              </div>
-            ) : (
-              "Create Account"
-            )}
-          </button>
+          <SubmitButton isLoading={isLoading} text="Create Account" />
         </form>
 
         <div className="text-center mt-8">
