@@ -30,7 +30,7 @@ const LoginForm = () => {
 
     try {
       const data = await loginAdmin(formData);
-      login(data.token); // your login() method
+      login(data.token); 
       toast.success("Login Successful");
       navigate("/home");
     } catch (error: any) {
