@@ -1,4 +1,4 @@
-import Sidebar from "../components/Dashboard/Sidebar";
+import Sidebar from "../components/Sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
 
 const Dashboard = () => {

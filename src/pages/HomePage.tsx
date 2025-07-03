@@ -1,4 +1,4 @@
-import Home from "../components/Dashboard/Home";
+import Home from "../components/Dashboard/DashBoard";
 
 const HomePage = () => <Home />;
 

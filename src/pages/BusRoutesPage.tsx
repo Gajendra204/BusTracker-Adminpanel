@@ -1,4 +1,4 @@
-import BusRoutes from "../components/Dashboard/BusRoutes";
+import BusRoutes from "../components/Routes/BusRoutes";
 
 const BusRoutesPage = () => <BusRoutes />;
 

@@ -1,6 +1,6 @@
 import { Bus, MapPin, TrendingUp } from "lucide-react";
 
-const Home = () => {
+const Dashboard = () => {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">
@@ -46,4 +46,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Dashboard;

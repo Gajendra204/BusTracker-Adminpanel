@@ -1,4 +1,4 @@
-import Buses from "../components/Dashboard/Buses";
+import Buses from "../components/Buses/Buses";
 
 const BusesPage = () => <Buses />;
 
