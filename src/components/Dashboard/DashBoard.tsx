@@ -1,6 +1,27 @@
-import { Bus, MapPin, TrendingUp } from "lucide-react";
+import { Bus, MapPin, TrendingUp, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getAllBuses, getAllDrivers } from "../../api";
 
 const Dashboard = () => {
+  const [busCount, setBusCount] = useState(0);
+  const [driverCount, setDriverCount] = useState(0);
+
+  useEffect(() => {
+    fetchCounts();
+  }, []);
+
+  const fetchCounts = async () => {
+  try {
+    const { data: buses } = await getAllBuses();
+    const { data: drivers } = await getAllDrivers();
+    setBusCount(buses.length);
+    setDriverCount(drivers.length);
+  } catch (err) {
+    setBusCount(0);
+    setDriverCount(0);
+  }
+};
+
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">
@@ -15,7 +36,18 @@ const Dashboard = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Buses</p>
-              <p className="text-2xl font-bold text-gray-900">12</p>
+              <p className="text-2xl font-bold text-gray-900">{busCount}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex items-center">
+            <div className="bg-green-500 p-3 rounded-lg">
+              <User className="w-6 h-6 text-white" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Total Drivers</p>
+              <p className="text-2xl font-bold text-gray-900">{driverCount}</p>
             </div>
           </div>
         </div>

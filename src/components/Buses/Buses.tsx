@@ -1,10 +1,24 @@
-import { useState } from "react";
+import { useState} from "react";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import Button from "../Shared/Button";
-
+import { FormInput } from "../Shared/FormInput";
+import { FormSelect } from "../Shared/FormSelect";
+import { ModalActions } from "../Shared/ModalActions";
+import { useBuses } from "../../hooks/useBuses";
 const Buses = () => {
   const [showAddForm, setShowAddForm] = useState(false);
 
+  const {
+    buses,
+    drivers,
+    loading,
+    formData,
+    handleChange,
+    handleSubmit,
+    resetForm,
+  } = useBuses();
+
+  
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-8">
@@ -19,67 +33,47 @@ const Buses = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">Add New Bus</h2>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Bus Name
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
-                  placeholder="Enter bus name"
-                  required                
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Bus Number
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
-                  placeholder="Enter bus number"
-                  required                 
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Capacity
-                </label>
-                <input
-                  type="number"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
-                  placeholder="Enter capacity"
-                  required                  
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Select Driver
-                </label>
-                <select
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
-                  required               
-                >
-                  <option value="">Select a driver</option>
-                  <option value="Ram">Ram</option>
-                </select>
-              </div>
-              <div className="flex space-x-3 pt-4">
-                <button
-                  type="button"
-                  className="flex-1 bg-gray-900 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition duration-200"
-                >
-                  Add Bus
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowAddForm(false)}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-200"
-                >
-                  Cancel
-                </button>
-              </div>
+            <form onSubmit={handleSubmit}>
+              <FormInput
+                label="Bus Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+              <FormInput
+                label="Bus Number"
+                name="number"
+                value={formData.number}
+                onChange={handleChange}
+                required
+              />
+              <FormInput
+                label="Capacity"
+                name="capacity"
+                type="number"
+                value={formData.capacity}
+                onChange={handleChange}
+                required
+              />
+              <FormSelect
+                label="Select Driver"
+                name="driverId"
+                value={formData.driverId}
+                onChange={handleChange}
+                options={drivers}
+                required
+              />
+               <ModalActions
+                submitText="Add Bus"
+                onCancel={() => {
+                  setShowAddForm(false);
+                  resetForm();
+                }}
+                disabled={
+                  !formData.name || !formData.number || !formData.capacity
+                }
+              />
             </form>
           </div>
         </div>
@@ -106,82 +100,51 @@ const Buses = () => {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            <tr className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                Chambal
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                41
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                40
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                Ram
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button
-                  className="text-gray-400 cursor-not-allowed mr-3"
-                  disabled
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
-                <button className="text-gray-300 cursor-not-allowed" disabled>
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </td>
-            </tr>
-            <tr className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                Yamuna
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                42
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                35
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                Shyam
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button
-                  className="text-gray-400 cursor-not-allowed mr-3"
-                  disabled
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
-                <button className="text-gray-300 cursor-not-allowed" disabled>
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </td>
-            </tr>
-            <tr className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                Narmada
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                22
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                45
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                Ghanshyam
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button
-                  className="text-gray-400 cursor-not-allowed mr-3"
-                  disabled
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
-                <button className="text-gray-300 cursor-not-allowed" disabled>
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </td>
-            </tr>
+          <tbody className="divide-y divide-gray-200">
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="px-6 py-4 text-center">
+                  Loading buses...
+                </td>
+              </tr>
+            ) : buses.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-6 py-4 text-center">
+                  No buses found
+                </td>
+              </tr>
+            ) : (
+              buses.map((bus) => (
+                <tr key={bus._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {bus.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {bus.busNumber}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {bus.capacity}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {bus.assignedDriver.name || "-"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex space-x-3">
+                      <button
+                        onClick={() => {}}
+                        className="text-gray-600 hover:text-gray-900 mr-3 transition-colors"
+                        aria-label="Edit bus"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button className="text-red-600 hover:text-red-900">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div> 
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
