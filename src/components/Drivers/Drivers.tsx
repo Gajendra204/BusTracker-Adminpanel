@@ -1,31 +1,13 @@
-import { useState} from "react";
+import { useState } from "react";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import { FormInput } from "../Shared/FormInput";
 import { ModalActions } from "../Shared/ModalActions";
 import { useDrivers } from "../../hooks/useDrivers";
 
 const Drivers = () => {
-  const { drivers, loading, addDriver } = useDrivers();
+  const { drivers, loading, formData, handleChange, handleSubmit } =
+    useDrivers();
   const [showAddForm, setShowAddForm] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-  });
- 
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await addDriver(formData);
-    setFormData({ name: "", phone: "" });
-    setShowAddForm(false);
-  };
 
   return (
     <div className="p-6">

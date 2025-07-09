@@ -6,10 +6,14 @@ export const useDrivers = () => {
   const [drivers, setDrivers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  
+  const [formData, setFormData] = useState({ name: "", phone: "" });
+
+  useEffect(() => {
+    fetchDrivers();
+  }, []);
 
   const fetchDrivers = async () => {
-    setLoading(true);
+    setLoading(true);8
     try {
       const res = await getAllDrivers();
       setDrivers(res.data || []);
@@ -21,18 +25,37 @@ export const useDrivers = () => {
     }
   };
 
-  const addDriver = async (data: { name: string; phone: string }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const resetForm = () => {
+    setFormData({ name: "", phone: "" });
+  };
+
+  const handleSubmit = async (
+    e: React.FormEvent,
+    onSuccess?: () => void
+  ) => {
+    e.preventDefault();
     try {
-      await createDriver(data);
+      await createDriver(formData);
+      toast.success("Driver added");
+      resetForm();
       await fetchDrivers();
+      if (onSuccess) onSuccess();
     } catch (err) {
       toast.error("Error creating driver");
     }
   };
 
-  useEffect(() => {
-    fetchDrivers();
-  }, []);
-
-  return { drivers, loading, fetchDrivers, addDriver };
+  return {
+    drivers,
+    loading,
+    fetchDrivers,
+    formData,
+    handleChange,
+    handleSubmit,
+    resetForm,
+  };
 };
