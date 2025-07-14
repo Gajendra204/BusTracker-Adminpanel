@@ -23,6 +23,7 @@ export const useBuses = () => {
     try {
       const res = await getAllBuses();
       setBuses(res.data || []);
+      console.log(res);
     } catch (err) {
       toast.error("Failed to fetch buses");
     }

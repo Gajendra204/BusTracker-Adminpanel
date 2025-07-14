@@ -1,9 +1,7 @@
-
 import axios from "axios";
 
 const API_BASE_URL = "http://localhost:5000/api";
 
-//Add an interceptor to attach the token to every request
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("adminToken");
@@ -28,6 +26,17 @@ export interface RegisterData {
   password: string;
 }
 
+export type AdminProfile = {
+  name: string;
+  schoolName: string;
+  email: string;
+};
+
+interface LoginResponse {
+  token: string;
+  message: string;
+}
+
 export const loginAdmin = async (data: LoginData) => {
   const response = await axios.post(`${API_BASE_URL}/auth/admin/login`, data);
   return response.data; 
@@ -38,7 +47,8 @@ export const registerAdmin = async (data: RegisterData) => {
   return response.data; 
 };
 
-// BUS APIs
+
+// Bus API's
 export const getAllBuses = async () => {
   const response = await axios.get(`${API_BASE_URL}/buses`);
   return response.data;
@@ -54,7 +64,7 @@ export const assignDriverToBus = async (data: any) => {
   return response.data;
 };
 
-// DRIVER APIs
+// Driver API's
 export const getAllDrivers = async () => {
   const response = await axios.get(`${API_BASE_URL}/driver`);
   return response.data;
@@ -63,5 +73,25 @@ export const getAllDrivers = async () => {
 export const createDriver = async (data: any) => {
   const response = await axios.post(`${API_BASE_URL}/driver/create`, data);
   return response.data;
+};
+
+export const login = async (email: string, password: string): Promise<{ data: LoginResponse }> => {
+  const response = await axios.post(`${API_BASE_URL}/auth/admin/login`, { email, password });
+  return response;
+};
+
+export const register = async (
+  name: string,
+  email: string,
+  password: string,
+  schoolName: string
+): Promise<{ data: LoginResponse }> => {
+  const response = await axios.post(`${API_BASE_URL}/auth/admin/register`, {
+    name,
+    email,
+    password,
+    schoolName,
+  });
+  return response;
 };
 
