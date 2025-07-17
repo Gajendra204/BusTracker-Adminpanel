@@ -17,9 +17,7 @@ const Profile = () => {
   })
 
   const [editData, setEditData] = useState(profileData)
-
   
-
     const handleEdit = () => {
     setIsEditing(true)
     setEditData(profileData)

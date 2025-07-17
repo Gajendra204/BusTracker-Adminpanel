@@ -1,4 +1,3 @@
-// src/components/Shared/ModalActions.tsx
 type ModalActionsProps = {
   submitText?: string;
   cancelText?: string;

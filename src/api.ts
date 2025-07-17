@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://api-bus-tracker.onrender.com/api";
+//const API_BASE_URL = "https://api-bus-tracker.onrender.com/api";
+const API_BASE_URL = "http://localhost:5000/api";
 
 axios.interceptors.request.use(
   (config) => {
@@ -35,6 +36,41 @@ export type AdminProfile = {
 interface LoginResponse {
   token: string;
   message: string;
+}
+
+export interface IRouteStop {
+  name: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  order: number;
+}
+
+interface IBus {
+  _id: string;
+  name: string;
+  busNumber: string;
+}
+
+export interface IRoute {
+  _id: string;
+  name: string;
+  stops: IRouteStop[];
+   busId?: IBus | string;
+}
+
+export interface CreateRouteData {
+  name: string;
+  stops: IRouteStop[];
+}
+
+export interface UpdateRouteData extends CreateRouteData {
+  busId?: string;
+}
+
+export interface AssignBusData {
+  busId: string;
 }
 
 export const loginAdmin = async (data: LoginData) => {
@@ -79,6 +115,45 @@ export const login = async (email: string, password: string): Promise<{ data: Lo
   const response = await axios.post(`${API_BASE_URL}/auth/admin/login`, { email, password });
   return response;
 };
+
+// ROUTES API's
+// Get all routes
+export const getAllRoutes = async (): Promise<{ data: IRoute[] }> => {
+  const response = await axios.get(`${API_BASE_URL}/routes`);
+  return response.data;
+};
+
+// Get single route by ID
+export const getRouteById = async (id: string): Promise<{ data: IRoute }> => {
+  const response = await axios.get(`${API_BASE_URL}/routes/${id}`);
+  return response.data;
+};
+
+// Create new route
+export const createRoute = async (data: CreateRouteData): Promise<{ data: IRoute }> => {
+  const response = await axios.post(`${API_BASE_URL}/routes`, data);
+  return response.data;
+};
+
+// Update existing route
+export const updateRoute = async (id: string, data: UpdateRouteData): Promise<{ data: IRoute }> => {
+  const response = await axios.put(`${API_BASE_URL}/routes/${id}`, data);
+  return response.data;
+};
+
+// Delete route
+export const deleteRoute = async (id: string): Promise<{ message: string }> => {
+  const response = await axios.delete(`${API_BASE_URL}/routes/${id}`);
+  return response.data;
+};
+
+// Assign bus to route
+export const assignBusToRoute = async (routeId: string, data: AssignBusData): Promise<{ data: IRoute }> => {
+  const response = await axios.patch(`${API_BASE_URL}/routes/${routeId}/assign-bus`, data);
+  return response.data;
+};
+
+
 
 export const register = async (
   name: string,
