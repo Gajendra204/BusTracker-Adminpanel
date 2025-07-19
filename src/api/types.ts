@@ -10,6 +10,12 @@ export interface RegisterData {
   password: string;
 }
 
+export type AdminProfile = {
+  name: string;
+  schoolName: string;
+  email: string;
+};
+
 export interface LoginResponse {
   token: string;
   message: string;

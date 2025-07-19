@@ -1,5 +1,5 @@
 import axiosInstance from "./axiosConfig";
-import type { LoginData, RegisterData, LoginResponse, AdminProfile } from "./types";
+import type { LoginData, RegisterData} from "./types";
 
 export const loginAdmin = async (data: LoginData) => {
   try {
