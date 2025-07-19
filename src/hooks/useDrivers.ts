@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAllDrivers, createDriver } from "../api";
+import { getAllDrivers, createDriver } from "../api/drivers";
 import toast from "react-hot-toast";
 
 export const useDrivers = () => {

@@ -1,6 +1,8 @@
 import { Bus, MapPin, TrendingUp, User } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getAllBuses, getAllDrivers } from "../../api";
+import {getAllDrivers } from "../../api/drivers";
+import {getAllBuses } from "../../api/buses";
+
 
 const Dashboard = () => {
   const [busCount, setBusCount] = useState(0);
@@ -23,13 +25,13 @@ const Dashboard = () => {
 };
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">
+    <div className="p-2">
+      <h1 className="text-3xl font-bold text-gray-900 mb-4">
         Dashboard Overview
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="bg-white rounded-lg shadow-md p-4">
           <div className="flex items-center">
             <div className="bg-blue-500 p-3 rounded-lg">
               <Bus className="w-6 h-6 text-white" />
@@ -40,7 +42,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-md p-4">
           <div className="flex items-center">
             <div className="bg-green-500 p-3 rounded-lg">
               <User className="w-6 h-6 text-white" />
@@ -51,7 +53,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-md p-4">
           <div className="flex items-center">
             <div className="bg-purple-500 p-3 rounded-lg">
               <MapPin className="w-6 h-6 text-white" />
@@ -62,7 +64,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-md p-4">
           <div className="flex items-center">
             <div className="bg-orange-500 p-3 rounded-lg">
               <TrendingUp className="w-6 h-6 text-white" />

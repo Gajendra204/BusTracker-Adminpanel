@@ -10,8 +10,8 @@ const Drivers = () => {
   const [showAddForm, setShowAddForm] = useState(false);
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-2">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Drivers Management</h1>
         <button
           onClick={() => setShowAddForm(true)}
@@ -23,7 +23,10 @@ const Drivers = () => {
       </div>
 
       {showAddForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div
+          className="fixed inset-0 flex items-center justify-center z-95"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
+        >
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">Add New Driver</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -49,7 +52,6 @@ const Drivers = () => {
               <ModalActions
                 submitText="Add Driver"
                 onCancel={() => setShowAddForm(false)}
-                disabled={!formData.name || !formData.phone}
               />
             </form>
           </div>

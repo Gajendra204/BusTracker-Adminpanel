@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import {API_BASE_URL} from "../../api/axiosConfig.ts";
 
 const createCustomMarker = () => {
   return L.divIcon({
@@ -27,14 +28,14 @@ export const MapLocationPicker = ({
   const markerRef = useRef<L.Marker>(null);
 
   const handleSearch = async (e: React.MouseEvent) => {
-    e.preventDefault(); 
-    e.stopPropagation(); 
+    e.preventDefault();
+    e.stopPropagation();
 
     if (!searchQuery.trim()) return;
 
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}`
+        `${API_BASE_URL}/geocode?q=${encodeURIComponent(searchQuery)}`
       );
       const data = await response.json();
 

@@ -59,8 +59,8 @@ const BusRoutes = () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-2">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Routes Management</h1>
         <Button onClick={() => setShowAddForm(true)}>
           <Plus className="w-5 h-5 mr-2" /> Add New Route
@@ -95,7 +95,7 @@ const BusRoutes = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {routes.map((route) => (
+              {routes?.map((route) => (
                 <RouteRow
                   key={route._id}
                   route={route}

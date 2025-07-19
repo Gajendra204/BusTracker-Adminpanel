@@ -15,6 +15,7 @@ import BusesPage from "./pages/BusesPage";
 import DriversPage from "./pages/DriversPage";
 import BusRoutesPage from "./pages/BusRoutesPage";
 import ProfilePage from "./pages/ProfilePage";
+import ParentsPage from "./pages/ParentsPage";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="buses" element={<BusesPage />} />
           <Route path="drivers" element={<DriversPage />} />
           <Route path="routes" element={<BusRoutesPage />} />
+          <Route path="parents" element={<ParentsPage />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
         <Route path="/auth" element={<Navigate to="/login" replace />} />

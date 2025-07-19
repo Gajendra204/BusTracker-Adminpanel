@@ -3,7 +3,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { User, School, Mail, Lock } from "lucide-react";
-import { registerAdmin } from "../../api";
+import { registerAdmin } from "../../api/auth";
 import SubmitButton from "../Shared/SubmitButton";
 
 const RegisterForm = () => {

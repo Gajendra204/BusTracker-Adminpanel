@@ -3,7 +3,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { loginAdmin } from "../../api";
+import { loginAdmin } from "../../api/auth";
 import { Loader, User, Lock } from "lucide-react";
 
 const LoginForm = () => {

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { getAllBuses, getAllDrivers, createBus } from "../api";
+import { getAllBuses,  createBus } from "../api/buses";
+import { getAllDrivers } from "../api/drivers";
+
 import toast from "react-hot-toast";
 
 export const useBuses = () => {

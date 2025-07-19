@@ -1,0 +1,59 @@
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  name: string;
+  schoolName: string;
+  email: string;
+  password: string;
+}
+
+export type AdminProfile = {
+  name: string;
+  schoolName: string;
+  email: string;
+};
+
+export interface LoginResponse {
+  token: string;
+  message: string;
+}
+
+export interface IRouteStop {
+  name: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  order: number;
+}
+
+export interface IBus {
+  _id: string;
+  name: string;
+  number: string;
+  capacity: number
+  driverId: string
+}
+
+export interface IRoute {
+  _id: string;
+  name: string;
+  stops: IRouteStop[];
+  busId?: IBus | string;
+}
+
+export interface CreateRouteData {
+  name: string;
+  stops: IRouteStop[];
+}
+
+export interface UpdateRouteData extends CreateRouteData {
+  busId?: string;
+}
+
+export interface AssignBusData {
+  busId: string;
+}

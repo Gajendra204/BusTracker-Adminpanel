@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState } from "react";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import Button from "../Shared/Button";
 import { FormInput } from "../Shared/FormInput";
@@ -18,10 +18,9 @@ const Buses = () => {
     resetForm,
   } = useBuses();
 
-  
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-2">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Buses Management</h1>
         <Button onClick={() => setShowAddForm(true)}>
           <Plus className="w-5 h-5 mr-2" />
@@ -30,7 +29,10 @@ const Buses = () => {
       </div>
 
       {showAddForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div
+          className="fixed inset-0 flex items-center justify-center z-95"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
+        >
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">Add New Bus</h2>
             <form onSubmit={handleSubmit}>
@@ -64,15 +66,12 @@ const Buses = () => {
                 options={drivers}
                 required
               />
-               <ModalActions
+              <ModalActions
                 submitText="Add Bus"
                 onCancel={() => {
                   setShowAddForm(false);
                   resetForm();
                 }}
-                disabled={
-                  !formData.name || !formData.number || !formData.capacity
-                }
               />
             </form>
           </div>
@@ -140,7 +139,7 @@ const Buses = () => {
                       <button className="text-red-600 hover:text-red-900">
                         <Trash2 className="w-4 h-4" />
                       </button>
-                    </div> 
+                    </div>
                   </td>
                 </tr>
               ))

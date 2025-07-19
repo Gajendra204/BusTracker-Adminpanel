@@ -6,11 +6,13 @@ import {
   updateRoute,
   deleteRoute,
   assignBusToRoute,
-  type IRoute,
+  
+} from "../api/routes";
+import {type IRoute,
   type CreateRouteData,
   type UpdateRouteData,
-  type AssignBusData
-} from "../api";
+  type AssignBusData} from "../api/types"
+import toast from "react-hot-toast";
 
 export const useRoutes = () => {
   const [routes, setRoutes] = useState<IRoute[]>([]);
@@ -25,7 +27,7 @@ export const useRoutes = () => {
       const response = await getAllRoutes();
       setRoutes(response.data);
     } catch (err:any) {
-      setError(err.message || "Failed to fetch routes");
+      toast.error("Failed to fetch routes");
     } finally {
       setIsLoading(false);
     }
@@ -37,8 +39,8 @@ export const useRoutes = () => {
     try {
       const response = await getRouteById(id);
       setCurrentRoute(response.data);
-    } catch (err:any) {
-      setError(err.message || "Failed to fetch route");
+    } catch (error) {
+      toast.error("Failed to fetch route");
     } finally {
       setIsLoading(false);
     }
@@ -51,9 +53,8 @@ export const useRoutes = () => {
       const response = await createRoute(routeData);
       setRoutes(prev => [...prev, response.data]);
       return response.data;
-    } catch (err:any) {
-      setError(err.message || "Failed to create route");
-      throw err;
+    } catch (error) {
+      toast.error("Failed to create route");
     } finally {
       setIsLoading(false);
     }
@@ -68,9 +69,8 @@ export const useRoutes = () => {
         prev.map(route => (route._id === id ? response.data : route))
       );
       return response.data;
-    } catch (err:any) {
-      setError(err.message || "Failed to update route");
-      throw err;
+    } catch (error) {
+      toast.error("Failed to update route");
     } finally {
       setIsLoading(false);
     }
@@ -82,9 +82,8 @@ export const useRoutes = () => {
     try {
       await deleteRoute(id);
       setRoutes(prev => prev.filter(route => route._id !== id));
-    } catch (err:any) {
-      setError(err.message || "Failed to delete route");
-      throw err;
+    } catch (error) {
+      toast.error("Failed to delete route");
     } finally {
       setIsLoading(false);
     }
@@ -101,7 +100,6 @@ export const useRoutes = () => {
       return response.data;
     } catch (err:any) {
       setError(err.message || "Failed to assign bus to route");
-      throw err;
     } finally {
       setIsLoading(false);
     }
