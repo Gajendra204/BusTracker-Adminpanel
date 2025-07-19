@@ -15,3 +15,13 @@ export const assignDriverToBus = async (data: { busId: string, driverId: string 
   const response = await axiosInstance.patch("/buses/assign-driver", data);
   return response.data;
 };
+
+export const updateBus = async (id: string, data: Partial<IBus>) => {
+  const response = await axiosInstance.put(`/buses/${id}`, data);
+  return response.data;
+};
+
+export const deleteBus = async (id: string) => {
+  const response = await axiosInstance.delete(`/buses/${id}`);
+  return response.data;
+};

@@ -5,9 +5,55 @@ import { ModalActions } from "../Shared/ModalActions";
 import { useDrivers } from "../../hooks/useDrivers";
 
 const Drivers = () => {
-  const { drivers, loading, formData, handleChange, handleSubmit } =
-    useDrivers();
+  const {
+    drivers,
+    loading,
+    formData,
+    setFormData,
+    handleChange,
+    handleSubmit,
+    updateExistingDriver,
+    removeDriver,
+    resetForm,
+  } = useDrivers();
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingDriver, setEditingDriver] = useState<null | any>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [driverToDelete, setDriverToDelete] = useState<null | string>(null);
+
+  const handleEditClick = (driver: any) => {
+    setEditingDriver(driver);
+    setFormData({
+      name: driver.name,
+      phone: driver.phone,
+    });
+    setShowAddForm(true);
+  };
+
+  const handleUpdateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingDriver) {
+      const success = await updateExistingDriver(editingDriver._id, formData);
+      if (success) {
+        setEditingDriver(null);
+        setShowAddForm(false);
+        resetForm();
+      }
+    }
+  };
+
+  const handleDeleteClick = (driverId: string) => {
+    setDriverToDelete(driverId);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (driverToDelete) {
+      await removeDriver(driverToDelete);
+      setShowDeleteConfirm(false);
+      setDriverToDelete(null);
+    }
+  };
 
   return (
     <div className="p-2">
@@ -28,8 +74,13 @@ const Drivers = () => {
           style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
         >
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Add New Driver</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <h2 className="text-xl font-bold mb-4">
+              {editingDriver ? "Edit Driver" : "Add New Driver"}
+            </h2>
+            <form
+              onSubmit={editingDriver ? handleUpdateSubmit : handleSubmit}
+              className="space-y-4"
+            >
               <FormInput
                 label="Driver Name"
                 name="name"
@@ -50,10 +101,37 @@ const Drivers = () => {
               />
 
               <ModalActions
-                submitText="Add Driver"
-                onCancel={() => setShowAddForm(false)}
+                submitText={editingDriver ? "Update Driver" : "Add Driver"}
+                onCancel={() => {
+                  setShowAddForm(false);
+                  setEditingDriver(null);
+                  resetForm();
+                }}
               />
             </form>
+          </div>
+        </div>
+      )}
+
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center z-95 bg-black bg-opacity-80">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+            <p className="mb-6">Are you sure you want to delete this bus?</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -96,10 +174,16 @@ const Drivers = () => {
                     {driver.phone}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button className="text-gray-600 hover:text-gray-900 mr-3">
+                    <button
+                      onClick={() => handleEditClick(driver)}
+                      className="text-gray-600 hover:text-gray-900 mr-3"
+                    >
                       <Edit className="w-4 h-4" />
                     </button>
-                    <button className="text-red-600 hover:text-red-900">
+                    <button
+                      onClick={() => handleDeleteClick(driver._id)}
+                      className="text-red-600 hover:text-red-900"
+                    >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </td>

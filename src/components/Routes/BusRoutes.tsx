@@ -22,6 +22,8 @@ const BusRoutes = () => {
   const [selectedBusForRoute, setSelectedBusForRoute] = useState<{
     [routeId: string]: string;
   }>({});
+   const [routeToDelete, setRouteToDelete] = useState<null | string>(null);
+   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     fetchRoutes();
@@ -49,12 +51,16 @@ const BusRoutes = () => {
   };
 
   const handleDelete = async (routeId: string) => {
-    if (confirm("Are you sure you want to delete this route?")) {
-      try {
-        await removeRoute(routeId);
-      } catch (err) {
-        console.error("Failed to delete route:", err);
-      }
+    setRouteToDelete(routeId);
+    setShowDeleteConfirm(true);
+  };
+
+
+  const confirmDelete = async () => {
+    if (routeToDelete) {
+      await removeRoute(routeToDelete);
+      setShowDeleteConfirm(false);
+      setRouteToDelete(null);
     }
   };
 
@@ -69,6 +75,29 @@ const BusRoutes = () => {
 
       {showAddForm && (
         <RouteForm onCancel={() => setShowAddForm(false)} onSubmit={handleCreateRoute} />
+      )}
+
+        {showDeleteConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center z-95 bg-black bg-opacity-80">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+            <p className="mb-6">Are you sure you want to delete this bus?</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {isLoading ? (

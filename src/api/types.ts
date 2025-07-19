@@ -10,12 +10,6 @@ export interface RegisterData {
   password: string;
 }
 
-export type AdminProfile = {
-  name: string;
-  schoolName: string;
-  email: string;
-};
-
 export interface LoginResponse {
   token: string;
   message: string;
@@ -33,7 +27,7 @@ export interface IRouteStop {
 export interface IBus {
   _id: string;
   name: string;
-  number: string;
+  busNumber: string;
   capacity: number
   driverId: string
 }

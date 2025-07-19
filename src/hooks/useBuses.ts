@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllBuses,  createBus } from "../api/buses";
+import { getAllBuses,  createBus, deleteBus, updateBus } from "../api/buses";
 import { getAllDrivers } from "../api/drivers";
 
 import toast from "react-hot-toast";
@@ -41,6 +41,36 @@ export const useBuses = () => {
     }
   };
 
+  const updateExistingBus = async (id: string, data: Partial<typeof formData>) => {
+  try {
+    await updateBus(id, {
+      name: data.name,
+      busNumber: data.number,
+      capacity: Number(data.capacity),
+      driverId: data.driverId 
+    });
+    toast.success("Bus updated successfully");
+    await fetchBuses();
+    return true;
+  } catch (err) {
+    toast.error("Failed to update bus");
+    return false;
+  }
+};
+
+const removeBus = async (id: string) => {
+  try {
+    await deleteBus(id);
+    toast.success("Bus deleted successfully");
+    fetchBuses();
+    return true;
+  } catch (err) {
+    toast.error("Failed to delete bus");
+    return false;
+  }
+};
+
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -52,7 +82,7 @@ export const useBuses = () => {
     try {
       await createBus({
         name: formData.name,
-        number: formData.number,
+        busNumber: formData.number,
         capacity: Number(formData.capacity),
         driverId: formData.driverId,
       });
@@ -75,9 +105,12 @@ export const useBuses = () => {
     drivers,
     loading,
     formData,
+    setFormData,
     handleChange,
     handleSubmit,
     resetForm,
     fetchBuses,
+    updateExistingBus,
+  removeBus
   };
 };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAllDrivers, createDriver } from "../api/drivers";
+import { getAllDrivers, createDriver, deleteDriver, updateDriver } from "../api/drivers";
 import toast from "react-hot-toast";
 
 export const useDrivers = () => {
@@ -24,6 +24,31 @@ export const useDrivers = () => {
       setLoading(false);
     }
   };
+
+  const updateExistingDriver = async (id: string, data: { name: string; phone: string }) => {
+  try {
+    await updateDriver(id, data);
+    toast.success("Driver updated successfully");
+    fetchDrivers();
+    return true;
+  } catch (err) {
+    toast.error("Failed to update driver");
+    return false;
+  }
+};
+
+const removeDriver = async (id: string) => {
+  try {
+    await deleteDriver(id);
+    toast.success("Driver deleted successfully");
+    fetchDrivers();
+    return true;
+  } catch (err) {
+    toast.error("Failed to delete driver");
+    return false;
+  }
+};
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -54,8 +79,11 @@ export const useDrivers = () => {
     loading,
     fetchDrivers,
     formData,
+    setFormData,
     handleChange,
     handleSubmit,
     resetForm,
+    updateExistingDriver,
+  removeDriver
   };
 };
