@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { getAllBuses,  createBus, deleteBus, updateBus } from "../api/buses";
 import { getAllDrivers } from "../api/drivers";
-
 import toast from "react-hot-toast";
+import type { IBus, IDriver } from "../api/types";
 
 export const useBuses = () => {
-  const [buses, setBuses] = useState<any[]>([]);
-  const [drivers, setDrivers] = useState<any[]>([]);
+  const [buses, setBuses] = useState<IBus[]>([]);
+  const [drivers, setDrivers] = useState<IDriver[]>([]);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -25,7 +25,6 @@ export const useBuses = () => {
     try {
       const res = await getAllBuses();
       setBuses(res.data || []);
-      console.log(res);
     } catch (err) {
       toast.error("Failed to fetch buses");
     }
@@ -111,6 +110,6 @@ const removeBus = async (id: string) => {
     resetForm,
     fetchBuses,
     updateExistingBus,
-  removeBus
+    removeBus
   };
 };

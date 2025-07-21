@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 import { FormInput } from "../Shared/FormInput";
 import { ModalActions } from "../Shared/ModalActions";
 import { useDrivers } from "../../hooks/useDrivers";
+import type { IDriver } from "../../api/types";
 
 const Drivers = () => {
   const {
@@ -21,7 +22,7 @@ const Drivers = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [driverToDelete, setDriverToDelete] = useState<null | string>(null);
 
-  const handleEditClick = (driver: any) => {
+  const handleEditClick = (driver: IDriver) => {
     setEditingDriver(driver);
     setFormData({
       name: driver.name,
@@ -166,7 +167,7 @@ const Drivers = () => {
               </tr>
             ) : (
               drivers.map((driver) => (
-                <tr key={driver.id} className="hover:bg-gray-50">
+                <tr key={driver._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {driver.name}
                   </td>

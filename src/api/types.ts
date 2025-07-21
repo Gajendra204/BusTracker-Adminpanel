@@ -38,6 +38,15 @@ export interface IBus {
   driverId: string
 }
 
+export interface IDriver {
+  _id: string;
+  name: string;
+  phone: string;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+}
+
+
 export interface IRoute {
   _id: string;
   name: string;

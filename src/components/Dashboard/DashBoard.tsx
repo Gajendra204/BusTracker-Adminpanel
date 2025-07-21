@@ -2,11 +2,13 @@ import { Bus, MapPin, TrendingUp, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import {getAllDrivers } from "../../api/drivers";
 import {getAllBuses } from "../../api/buses";
+import { getAllRoutes } from "../../api/routes";
 
 
 const Dashboard = () => {
   const [busCount, setBusCount] = useState(0);
   const [driverCount, setDriverCount] = useState(0);
+  const [routeCount, setRouteCount] = useState(0);
 
   useEffect(() => {
     fetchCounts();
@@ -16,8 +18,10 @@ const Dashboard = () => {
   try {
     const { data: buses } = await getAllBuses();
     const { data: drivers } = await getAllDrivers();
+    const { data: routes } = await getAllRoutes();
     setBusCount(buses.length);
     setDriverCount(drivers.length);
+    setRouteCount(routes.length);
   } catch (err) {
     setBusCount(0);
     setDriverCount(0);
@@ -60,7 +64,7 @@ const Dashboard = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Routes</p>
-              <p className="text-2xl font-bold text-gray-900">6</p>
+              <p className="text-2xl font-bold text-gray-900">{routeCount}</p>
             </div>
           </div>
         </div>

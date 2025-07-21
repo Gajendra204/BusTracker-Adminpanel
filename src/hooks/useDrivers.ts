@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { getAllDrivers, createDriver, deleteDriver, updateDriver } from "../api/drivers";
 import toast from "react-hot-toast";
+import type { IDriver } from "../api/types";
 
 export const useDrivers = () => {
-  const [drivers, setDrivers] = useState<any[]>([]);
+  const [drivers, setDrivers] = useState<IDriver[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({ name: "", phone: "" });
@@ -84,6 +85,6 @@ const removeDriver = async (id: string) => {
     handleSubmit,
     resetForm,
     updateExistingDriver,
-  removeDriver
+    removeDriver
   };
 };
