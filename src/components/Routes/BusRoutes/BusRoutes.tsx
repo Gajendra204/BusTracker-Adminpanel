@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
-import { useRoutes } from "../../hooks/useRoutes";
-import { useBuses } from "../../hooks/useBuses";
-import Button from "../Shared/Button";
+import { useRoutes } from "../../../hooks/useRoutes";
+import { useBuses } from "../../../hooks/useBuses";
+import Button from "../../Shared/Button";
 import RouteForm from "./RouteForm";
 import RouteRow from "./RouteRow";
+import DeleteConfirmationModal from "../../Shared/DeleteConfirmationModal";
 
 const BusRoutes = () => {
   const {
@@ -22,8 +23,8 @@ const BusRoutes = () => {
   const [selectedBusForRoute, setSelectedBusForRoute] = useState<{
     [routeId: string]: string;
   }>({});
-   const [routeToDelete, setRouteToDelete] = useState<null | string>(null);
-   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [routeToDelete, setRouteToDelete] = useState<null | string>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     fetchRoutes();
@@ -55,7 +56,6 @@ const BusRoutes = () => {
     setShowDeleteConfirm(true);
   };
 
-
   const confirmDelete = async () => {
     if (routeToDelete) {
       await removeRoute(routeToDelete);
@@ -74,31 +74,17 @@ const BusRoutes = () => {
       </div>
 
       {showAddForm && (
-        <RouteForm onCancel={() => setShowAddForm(false)} onSubmit={handleCreateRoute} />
+        <RouteForm
+          onCancel={() => setShowAddForm(false)}
+          onSubmit={handleCreateRoute}
+        />
       )}
 
-        {showDeleteConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center z-95 bg-black bg-opacity-80">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
-            <p className="mb-6">Are you sure you want to delete this bus?</p>
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteConfirmationModal
+        isOpen={showDeleteConfirm}
+        onCancel={() => setShowDeleteConfirm(false)}
+        onConfirm={confirmDelete}
+      />
 
       {isLoading ? (
         <p>Loading routes...</p>
@@ -131,7 +117,10 @@ const BusRoutes = () => {
                   buses={buses}
                   selectedBus={selectedBusForRoute[route._id] || ""}
                   onBusSelect={(busId) =>
-                    setSelectedBusForRoute((prev) => ({ ...prev, [route._id]: busId }))
+                    setSelectedBusForRoute((prev) => ({
+                      ...prev,
+                      [route._id]: busId,
+                    }))
                   }
                   onAssign={() => handleAssign(route._id)}
                   onDelete={() => handleDelete(route._id)}

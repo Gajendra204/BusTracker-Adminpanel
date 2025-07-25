@@ -16,6 +16,7 @@ import DriversPage from "./pages/DriversPage";
 import BusRoutesPage from "./pages/BusRoutesPage";
 import ProfilePage from "./pages/ProfilePage";
 import ParentsPage from "./pages/ParentsPage";
+import StudentsByRoute from "./components/Routes/StudentsByRoute/StudentsByRoute";
 
 function App() {
   return (
@@ -39,6 +40,10 @@ function App() {
           <Route path="routes" element={<BusRoutesPage />} />
           <Route path="parents" element={<ParentsPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route
+            path="routes/:routeId/students"
+            element={<StudentsByRoute />}
+          />
         </Route>
         <Route path="/auth" element={<Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -34,8 +34,13 @@ export interface IBus {
   _id: string;
   name: string;
   busNumber: string;
-  capacity: number
-  driverId: string
+  capacity: number;
+  driverId: string;
+  assignedDriver?: {
+    _id: string;
+    name: string;
+    phone?: string;
+  };
 }
 
 export interface IDriver {
@@ -65,4 +70,25 @@ export interface UpdateRouteData extends CreateRouteData {
 
 export interface AssignBusData {
   busId: string;
+}
+
+export interface IStudent {
+  _id: string;
+  name: string;
+  class: number;
+  routeId: string;
+  parentName: string;
+  parentPhone: string;
+  address: string;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+}
+
+export interface CreateStudentData {
+  name: string;
+  class: number;
+  routeId: string;
+  parentName: string;
+  parentPhone: string;
+  address: string;
 }

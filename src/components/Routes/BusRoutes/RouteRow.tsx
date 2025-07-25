@@ -1,5 +1,6 @@
-import { Edit, Trash2 } from "lucide-react";
-import Button from "../Shared/Button";
+import { Edit, Trash2, Users } from "lucide-react";
+import Button from "../../Shared/Button";
+import { Link} from "react-router-dom";
 
 interface RouteRowProps {
   route: any;
@@ -22,9 +23,10 @@ const RouteRow = ({
     <tr className="hover:bg-gray-50">
       <td className="px-6 py-4 font-medium text-gray-900">{route.name}</td>
       <td className="px-6 py-4 text-sm text-gray-500">
-        {route.stops.map((stop:any, i:any) => (
+        {route.stops.map((stop: any, i: any) => (
           <div key={i}>
-            {i + 1}. {stop.name} ({stop.location.lat.toFixed(4)}, {stop.location.lng.toFixed(4)})
+            {i + 1}. {stop.name} ({stop.location.lat.toFixed(4)},{" "}
+            {stop.location.lng.toFixed(4)})
           </div>
         ))}
       </td>
@@ -50,7 +52,14 @@ const RouteRow = ({
           </div>
         )}
       </td>
-      <td className="px-6 py-4 text-sm">
+      <td className="px-6 py-4 text-sm flex ">
+        <Link
+          className="text-blue-600 hover:text-blue-900 mr-3"
+          title="View Students"
+          to={`/routes/${route._id}/students`}
+        >
+          <Users className="w-4 h-4" />
+        </Link>
         <button className="text-gray-600 hover:text-gray-900 mr-3">
           <Edit className="w-4 h-4" />
         </button>

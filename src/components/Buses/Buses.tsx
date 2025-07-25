@@ -5,6 +5,7 @@ import { FormInput } from "../Shared/FormInput";
 import { FormSelect } from "../Shared/FormSelect";
 import { ModalActions } from "../Shared/ModalActions";
 import { useBuses } from "../../hooks/useBuses";
+import DeleteConfirmationModal from "../Shared/DeleteConfirmationModal";
 const Buses = () => {
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -127,28 +128,11 @@ const Buses = () => {
         </div>
       )}
 
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center z-95 bg-black bg-opacity-80">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
-            <p className="mb-6">Are you sure you want to delete this bus?</p>
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteConfirmationModal
+        isOpen={showDeleteConfirm}
+        onCancel={() => setShowDeleteConfirm(false)}
+        onConfirm={confirmDelete}
+      />
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <table className="w-full">
