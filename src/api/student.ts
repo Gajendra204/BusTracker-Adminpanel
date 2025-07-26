@@ -1,5 +1,5 @@
 import axiosInstance from "./axiosConfig";
-import type { IStudent, CreateStudentData } from "./types";
+import type { CreateStudentData } from "./types";
 
 export const getStudentsByRoute = async (routeId: string, classFilter?: number) => {
   const url = `/students/route/${routeId}${

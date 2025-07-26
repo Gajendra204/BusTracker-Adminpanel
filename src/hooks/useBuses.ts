@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllBuses,  createBus, deleteBus, updateBus } from "../api/buses";
+import { getAllBuses,  createBus, deleteBus, updateBus, assignDriverToBus } from "../api/buses";
 import { getAllDrivers } from "../api/drivers";
 import toast from "react-hot-toast";
 import type { IBus, IDriver } from "../api/types";
@@ -69,6 +69,18 @@ const removeBus = async (id: string) => {
   }
 };
 
+const assignDriver = async (busId: string, driverId: string) => {
+  try {
+    await assignDriverToBus({ busId, driverId });
+    toast.success("Driver assigned successfully");
+    await fetchBuses();
+    return true;
+  } catch (err) {
+    toast.error("Failed to assign driver");
+    return false;
+  }
+};
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -110,6 +122,7 @@ const removeBus = async (id: string) => {
     resetForm,
     fetchBuses,
     updateExistingBus,
-    removeBus
+    removeBus,
+    assignDriver
   };
 };

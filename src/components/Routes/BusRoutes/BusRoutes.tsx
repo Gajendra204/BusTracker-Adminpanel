@@ -6,6 +6,8 @@ import Button from "../../Shared/Button";
 import RouteForm from "./RouteForm";
 import RouteRow from "./RouteRow";
 import DeleteConfirmationModal from "../../Shared/DeleteConfirmationModal";
+import { useRouteAssignments } from "../../../hooks/useRouteAssignments";
+import RoutesTable from "./RoutesTable";
 
 const BusRoutes = () => {
   const {
@@ -17,14 +19,21 @@ const BusRoutes = () => {
     removeRoute,
     assignBus,
   } = useRoutes();
-  const { buses } = useBuses();
+  const { buses, drivers, assignDriver } = useBuses();
 
   const [showAddForm, setShowAddForm] = useState(false);
-  const [selectedBusForRoute, setSelectedBusForRoute] = useState<{
-    [routeId: string]: string;
-  }>({});
   const [routeToDelete, setRouteToDelete] = useState<null | string>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Use the new custom hook for assignments
+  const {
+    selectedBusForRoute,
+    selectedDriverForRoute,
+    handleBusSelect,
+    handleDriverChange,
+    setSelectedBusForRoute,
+    setSelectedDriverForRoute,
+  } = useRouteAssignments(routes, buses);
 
   useEffect(() => {
     fetchRoutes();
@@ -64,6 +73,22 @@ const BusRoutes = () => {
     }
   };
 
+  // When a bus is selected, set the default driver for that bus and call assignDriver if needed
+  const onBusSelect = (routeId: string, busId: string) => {
+    handleBusSelect(routeId, busId);
+  };
+
+  const onDriverChange = async (
+    routeId: string,
+    busId: string,
+    driverId: string
+  ) => {
+    handleDriverChange(routeId, driverId);
+    if (busId && driverId) {
+      await assignDriver(busId, driverId);
+    }
+  };
+
   return (
     <div className="p-2">
       <div className="flex justify-between items-center mb-6">
@@ -91,44 +116,17 @@ const BusRoutes = () => {
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Route Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Stops
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Assigned Bus
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {routes?.map((route) => (
-                <RouteRow
-                  key={route._id}
-                  route={route}
-                  buses={buses}
-                  selectedBus={selectedBusForRoute[route._id] || ""}
-                  onBusSelect={(busId) =>
-                    setSelectedBusForRoute((prev) => ({
-                      ...prev,
-                      [route._id]: busId,
-                    }))
-                  }
-                  onAssign={() => handleAssign(route._id)}
-                  onDelete={() => handleDelete(route._id)}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <RoutesTable
+          routes={routes}
+          buses={buses}
+          drivers={drivers}
+          selectedBusForRoute={selectedBusForRoute}
+          selectedDriverForRoute={selectedDriverForRoute}
+          onBusSelect={onBusSelect}
+          onDriverChange={onDriverChange}
+          onAssign={handleAssign}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   );
