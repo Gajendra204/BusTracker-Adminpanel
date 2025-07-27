@@ -4,7 +4,6 @@ import { useRoutes } from "../../../hooks/useRoutes";
 import { useBuses } from "../../../hooks/useBuses";
 import Button from "../../Shared/Button";
 import RouteForm from "./RouteForm";
-import RouteRow from "./RouteRow";
 import DeleteConfirmationModal from "../../Shared/DeleteConfirmationModal";
 import { useRouteAssignments } from "../../../hooks/useRouteAssignments";
 import RoutesTable from "./RoutesTable";
@@ -19,20 +18,17 @@ const BusRoutes = () => {
     removeRoute,
     assignBus,
   } = useRoutes();
-  const { buses, drivers, assignDriver } = useBuses();
+  const { buses, drivers, assignDriver, fetchBuses } = useBuses();
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [routeToDelete, setRouteToDelete] = useState<null | string>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  // Use the new custom hook for assignments
   const {
     selectedBusForRoute,
     selectedDriverForRoute,
     handleBusSelect,
     handleDriverChange,
-    setSelectedBusForRoute,
-    setSelectedDriverForRoute,
   } = useRouteAssignments(routes, buses);
 
   useEffect(() => {
@@ -73,7 +69,6 @@ const BusRoutes = () => {
     }
   };
 
-  // When a bus is selected, set the default driver for that bus and call assignDriver if needed
   const onBusSelect = (routeId: string, busId: string) => {
     handleBusSelect(routeId, busId);
   };
@@ -126,6 +121,11 @@ const BusRoutes = () => {
           onDriverChange={onDriverChange}
           onAssign={handleAssign}
           onDelete={handleDelete}
+          assignBus={assignBus}
+          assignDriver={assignDriver}
+          fetchRoutes={fetchRoutes}
+          fetchBuses={fetchBuses}
+          loading={isLoading}
         />
       )}
     </div>

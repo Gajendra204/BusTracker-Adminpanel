@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Plus, Edit, Trash2 } from "lucide-react";
-import { FormInput } from "../Shared/FormInput";
-import { ModalActions } from "../Shared/ModalActions";
+import { UserRoundPlus } from "lucide-react";
 import { useDrivers } from "../../hooks/useDrivers";
-import type { IDriver } from "../../api/types";
 import DeleteConfirmationModal from "../Shared/DeleteConfirmationModal";
+import ManagementTable from "../Shared/ManagementTable";
+import ManagementFormModal from "../Shared/ManagementFormModal";
+import Button from "../Shared/Button";
 
 const Drivers = () => {
   const {
@@ -23,7 +23,7 @@ const Drivers = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [driverToDelete, setDriverToDelete] = useState<null | string>(null);
 
-  const handleEditClick = (driver: IDriver) => {
+  const handleEditClick = (driver: any) => {
     setEditingDriver(driver);
     setFormData({
       name: driver.name,
@@ -44,8 +44,8 @@ const Drivers = () => {
     }
   };
 
-  const handleDeleteClick = (driverId: string) => {
-    setDriverToDelete(driverId);
+  const handleDeleteClick = (driver: any) => {
+    setDriverToDelete(driver._id);
     setShowDeleteConfirm(true);
   };
 
@@ -57,63 +57,45 @@ const Drivers = () => {
     }
   };
 
+  const columns = [
+    { label: "Driver Name", render: (driver: any) => driver.name },
+    { label: "Phone Number", render: (driver: any) => driver.phone },
+  ];
+
+  const fields = [
+    { label: "Driver Name", name: "name", required: true },
+    { label: "Phone Number", name: "phone", type: "tel", required: true },
+  ];
+
   return (
     <div className="p-2">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Drivers Management</h1>
-        <button
-          onClick={() => setShowAddForm(true)}
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition duration-200 flex items-center"
+        <Button
+          onClick={() => {
+            setShowAddForm(true);
+            setEditingDriver(null);
+            resetForm();
+          }}
         >
-          <Plus className="w-5 h-5 mr-2" />
-          Add New Driver
-        </button>
+          <UserRoundPlus className="w-5 h-5 mr-2" /> Add New Driver
+        </Button>
       </div>
 
-      {showAddForm && (
-        <div
-          className="fixed inset-0 flex items-center justify-center z-95"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
-        >
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">
-              {editingDriver ? "Edit Driver" : "Add New Driver"}
-            </h2>
-            <form
-              onSubmit={editingDriver ? handleUpdateSubmit : handleSubmit}
-              className="space-y-4"
-            >
-              <FormInput
-                label="Driver Name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter driver name"
-                required
-              />
-
-              <FormInput
-                label="Phone Number"
-                name="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="Enter phone number"
-                required
-              />
-
-              <ModalActions
-                submitText={editingDriver ? "Update Driver" : "Add Driver"}
-                onCancel={() => {
-                  setShowAddForm(false);
-                  setEditingDriver(null);
-                  resetForm();
-                }}
-              />
-            </form>
-          </div>
-        </div>
-      )}
+      <ManagementFormModal
+        open={showAddForm}
+        title={editingDriver ? "Edit Driver" : "Add New Driver"}
+        fields={fields}
+        formData={formData}
+        onChange={handleChange}
+        onSubmit={editingDriver ? handleUpdateSubmit : handleSubmit}
+        onCancel={() => {
+          setShowAddForm(false);
+          setEditingDriver(null);
+          resetForm();
+        }}
+        submitText={editingDriver ? "Update Driver" : "Add Driver"}
+      />
 
       <DeleteConfirmationModal
         isOpen={showDeleteConfirm}
@@ -121,63 +103,14 @@ const Drivers = () => {
         onConfirm={confirmDelete}
       />
 
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Driver Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Phone Number
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {loading ? (
-              <tr>
-                <td colSpan={3} className="text-center py-4">
-                  Loading...
-                </td>
-              </tr>
-            ) : drivers.length === 0 ? (
-              <tr>
-                <td colSpan={3} className="text-center py-4">
-                  No drivers found.
-                </td>
-              </tr>
-            ) : (
-              drivers.map((driver) => (
-                <tr key={driver._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {driver.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {driver.phone}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => handleEditClick(driver)}
-                      className="text-gray-600 hover:text-gray-900 mr-3"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteClick(driver._id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <ManagementTable
+        columns={columns}
+        items={drivers}
+        loading={loading}
+        onEdit={handleEditClick}
+        onDelete={handleDeleteClick}
+        emptyText="No drivers found."
+      />
     </div>
   );
 };

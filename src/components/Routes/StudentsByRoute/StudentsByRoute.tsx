@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { useStudents } from "../../../hooks/useStudents";
 import { useRoutes } from "../../../hooks/useRoutes";
@@ -85,6 +85,7 @@ const StudentsByRoute = () => {
 
       <StudentTable
         students={students}
+        loading={isLoading}
         onDelete={(id) => {
           setStudentToDelete(id);
           setShowDeleteConfirm(true);

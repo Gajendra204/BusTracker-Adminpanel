@@ -2,10 +2,7 @@ import { Users, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useRef } from "react";
 import ReactDOM from "react-dom";
-import { useRoutes } from "../../../hooks/useRoutes";
-import { useBuses } from "../../../hooks/useBuses";
 import RouteManageModal from "./RouteManageModal";
-
 
 interface RouteRowProps {
   route: any;
@@ -17,6 +14,10 @@ interface RouteRowProps {
   onDriverChange: (driverId: string) => void;
   onAssign: () => void;
   onDelete: () => void;
+  assignBus: (routeId: string, data: { busId: string }) => Promise<any>;
+  assignDriver: (busId: string, driverId: string) => Promise<any>;
+  fetchRoutes: () => Promise<any>;
+  fetchBuses: () => Promise<any>;
 }
 
 const RouteRow = ({
@@ -25,10 +26,11 @@ const RouteRow = ({
   drivers,
   selectedBus,
   selectedDriver,
-  onBusSelect,
-  onDriverChange,
-  onAssign,
   onDelete,
+  assignBus,
+  assignDriver,
+  fetchRoutes,
+  fetchBuses,
 }: RouteRowProps) => {
   const [isManageModalOpen, setIsManageModalOpen] = useState(false);
   const [isRouteModalOpen, setIsRouteModalOpen] = useState(false);
@@ -36,8 +38,6 @@ const RouteRow = ({
   const [modalBus, setModalBus] = useState(selectedBus);
   const [modalDriver, setModalDriver] = useState(selectedDriver);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { assignBus, fetchRoutes } = useRoutes();
-  const { assignDriver, fetchBuses } = useBuses();
   const [expanded, setExpanded] = useState(false);
 
   const handleManageClick = () => {
@@ -116,14 +116,14 @@ const RouteRow = ({
         </td>
         <td className="px-6 py-4 text-sm flex ">
           <Link
-            className="text-blue-600 hover:text-blue-900 mr-3 mt-2"
+            className="text-gray-700 hover:text-blue-900 mr-3 mt-2"
             title="View Students"
             to={`/routes/${route._id}/students`}
           >
             <Users className="w-4 h-4" />
           </Link>
           <button
-            className="text-green-600 hover:text-green-900 mr-3 px-3 py-1 border border-green-300 rounded text-sm"
+            className="text-gray-700 hover:text-gray-900 mr-3 px-3 py-1 border border-gray-300 rounded text-sm"
             onClick={handleManageClick}
           >
             Manage
