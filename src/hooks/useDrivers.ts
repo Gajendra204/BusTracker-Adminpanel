@@ -1,55 +1,73 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getAllDrivers, createDriver, deleteDriver, updateDriver } from "../api/drivers";
 import toast from "react-hot-toast";
 import type { IDriver } from "../api/types";
 
 export const useDrivers = () => {
-  const [drivers, setDrivers] = useState<IDriver[]>([]);
-  const [loading, setLoading] = useState(false);
-
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({ name: "", phone: "" });
 
-  useEffect(() => {
-    fetchDrivers();
-  }, []);
+  // Fetch Drivers
+  const {
+    data: drivers = [],
+    isLoading,
+    error,
+    refetch: refetchDrivers
+  } = useQuery({
+    queryKey: ['drivers'],
+    queryFn: async () => {
+      const response = await getAllDrivers();
+      return response.data || [];
+    },
+    staleTime: 5 * 60 * 1000, 
+    gcTime: 10 * 60 * 1000, 
+  });
 
-  const fetchDrivers = async () => {
-    setLoading(true);8
-    try {
-      const res = await getAllDrivers();
-      setDrivers(res.data || []);
-    } catch (err) {
-      toast.error("Failed to load drivers");
-      setDrivers([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Create Driver
+  const createDriverMutation = useMutation({
+    mutationFn: createDriver,
+    onSuccess: (newDriver) => {
+      queryClient.setQueryData(['drivers'], (oldDrivers: IDriver[] = []) => [
+        ...oldDrivers,
+        newDriver.data
+      ]);
+      toast.success("Driver added");
+    },
+    onError: () => {
+      toast.error("Error creating driver");
+    },
+  });
 
-  const updateExistingDriver = async (id: string, data: { name: string; phone: string }) => {
-  try {
-    await updateDriver(id, data);
-    toast.success("Driver updated successfully");
-    fetchDrivers();
-    return true;
-  } catch (err) {
-    toast.error("Failed to update driver");
-    return false;
-  }
-};
+  // Update Driver
+  const updateDriverMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { name: string; phone: string } }) =>
+      updateDriver(id, data),
+    onSuccess: (updatedDriver, variables) => {
+      queryClient.setQueryData(['drivers'], (oldDrivers: IDriver[] = []) =>
+        oldDrivers.map(driver => driver._id === variables.id ? updatedDriver.data : driver)
+      );
+      toast.success("Driver updated successfully");
+    },
+    onError: () => {
+      toast.error("Failed to update driver");
+    },
+  });
 
-const removeDriver = async (id: string) => {
-  try {
-    await deleteDriver(id);
-    toast.success("Driver deleted successfully");
-    fetchDrivers();
-    return true;
-  } catch (err) {
-    toast.error("Failed to delete driver");
-    return false;
-  }
-};
-
+  // Delete Driver
+  const deleteDriverMutation = useMutation({
+    mutationFn: deleteDriver,
+    onSuccess: (_, deletedDriverId) => {
+      queryClient.setQueryData(['drivers'], (oldDrivers: IDriver[] = []) =>
+        oldDrivers.filter(driver => driver._id !== deletedDriverId)
+      );
+      queryClient.invalidateQueries({ queryKey: ['buses'] });
+      toast.success("Driver deleted successfully");
+    },
+    onError: () => {
+      toast.error("Failed to delete driver");
+    },
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -64,27 +82,27 @@ const removeDriver = async (id: string) => {
     onSuccess?: () => void
   ) => {
     e.preventDefault();
-    try {
-      await createDriver(formData);
-      toast.success("Driver added");
-      resetForm();
-      await fetchDrivers();
-      if (onSuccess) onSuccess();
-    } catch (err) {
-      toast.error("Error creating driver");
-    }
+    await createDriverMutation.mutateAsync(formData);
+    resetForm();
+    if (onSuccess) onSuccess();
   };
 
   return {
     drivers,
-    loading,
-    fetchDrivers,
+    loading: isLoading,
+    error,
     formData,
     setFormData,
     handleChange,
     handleSubmit,
     resetForm,
-    updateExistingDriver,
-    removeDriver
+    fetchDrivers: refetchDrivers,
+    updateExistingDriver: (id: string, data: { name: string; phone: string }) =>
+      updateDriverMutation.mutateAsync({ id, data }),
+    removeDriver: (id: string) => deleteDriverMutation.mutateAsync(id),
+    
+    isCreating: createDriverMutation.isPending,
+    isUpdating: updateDriverMutation.isPending,
+    isDeleting: deleteDriverMutation.isPending,
   };
 };

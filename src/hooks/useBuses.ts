@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
-import { getAllBuses,  createBus, deleteBus, updateBus, assignDriverToBus } from "../api/buses";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getAllBuses, createBus, deleteBus, updateBus, assignDriverToBus } from "../api/buses";
 import { getAllDrivers } from "../api/drivers";
 import toast from "react-hot-toast";
-import type { IBus, IDriver } from "../api/types";
+import type { IBus} from "../api/types";
 
 export const useBuses = () => {
-  const [buses, setBuses] = useState<IBus[]>([]);
-  const [drivers, setDrivers] = useState<IDriver[]>([]);
-  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     name: "",
     number: "",
@@ -15,72 +14,106 @@ export const useBuses = () => {
     driverId: "",
   });
 
-  useEffect(() => {
-    fetchBuses();
-    fetchDrivers();
-  }, []);
+  // Fetch Buses
+  const {
+    data: buses = [], 
+    isLoading: busesLoading,
+    error: busesError,
+    refetch: refetchBuses
+  } = useQuery({
+    queryKey: ['buses'], 
+    queryFn: async () => {
+      const response = await getAllBuses();
+      return response.data || [];
+    },
+    staleTime: 0, 
+    gcTime: 5 * 60 * 1000, 
+  });
 
-  const fetchBuses = async () => {
-    setLoading(true);
-    try {
-      const res = await getAllBuses();
-      setBuses(res.data || []);
-    } catch (err) {
-      toast.error("Failed to fetch buses");
-    }
-    setLoading(false);
-  };
+  // Fetch Drivers
+  const {
+    data: drivers = [],
+    isLoading: driversLoading,
+    error: driversError,
+    refetch: refetchDrivers
+  } = useQuery({
+    queryKey: ['drivers'],
+    queryFn: async () => {
+      const response = await getAllDrivers();
+      return response.data || [];
+    },
+  });
 
-  const fetchDrivers = async () => {
-    try {
-      const res = await getAllDrivers();
-      setDrivers(res.data || []);
-    } catch {
-      toast.error("Failed to fetch drivers");
-    }
-  };
+  // Create Bus
+  const createBusMutation = useMutation({
+    mutationFn: async (busData: {
+      name: string;
+      busNumber: string;
+      capacity: number;
+      driverId: string;
+    }) => {
+      const response = await createBus(busData);
+      return response.data;
+    },
+    onSuccess: (newBus) => {
+      queryClient.setQueryData(['buses'], (oldBuses: IBus[] = []) => [
+        ...oldBuses,
+        newBus
+      ]);
+      toast.success("Bus added successfully");
+    },
+    onError: () => {
+      toast.error("Failed to add bus. Please try again.");
+    },
+  });
 
-  const updateExistingBus = async (id: string, data: Partial<typeof formData>) => {
-  try {
-    await updateBus(id, {
-      name: data.name,
-      busNumber: data.number,
-      capacity: Number(data.capacity),
-      driverId: data.driverId 
-    });
-    toast.success("Bus updated successfully");
-    await fetchBuses();
-    return true;
-  } catch (err) {
-    toast.error("Failed to update bus");
-    return false;
-  }
-};
+  // Update Bus
+  const updateBusMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      const response = await updateBus(id, {
+        name: data.name,
+        busNumber: data.number,
+        capacity: Number(data.capacity),
+        driverId: data.driverId
+      });
+      return response.data;
+    },
+    onSuccess: (updatedBus, variables) => {
+      queryClient.setQueryData(['buses'], (oldBuses: IBus[] = []) =>
+        oldBuses.map(bus => bus._id === variables.id ? updatedBus : bus)
+      );
+      toast.success("Bus updated successfully");
+    },
+    onError: () => {
+      toast.error("Failed to update bus");
+    },
+  });
 
-const removeBus = async (id: string) => {
-  try {
-    await deleteBus(id);
-    toast.success("Bus deleted successfully");
-    fetchBuses();
-    return true;
-  } catch (err) {
-    toast.error("Failed to delete bus");
-    return false;
-  }
-};
+  // Delete Bus
+  const deleteBusMutation = useMutation({
+    mutationFn: deleteBus,
+    onSuccess: (_, deletedBusId) => {
+      queryClient.setQueryData(['buses'], (oldBuses: IBus[] = []) =>
+        oldBuses.filter(bus => bus._id !== deletedBusId)
+      );
+      toast.success("Bus deleted successfully");
+    },
+    onError: () => {
+      toast.error("Failed to delete bus");
+    },
+  });
 
-const assignDriver = async (busId: string, driverId: string) => {
-  try {
-    await assignDriverToBus({ busId, driverId });
-    toast.success("Driver assigned successfully");
-    await fetchBuses();
-    return true;
-  } catch (err) {
-    toast.error("Failed to assign driver");
-    return false;
-  }
-};
-
+  // Assign Driver to Bus
+  const assignDriverMutation = useMutation({
+    mutationFn: assignDriverToBus,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['buses'] });
+      toast.success("Driver assigned successfully");
+    },
+    onError: () => {
+      toast.error("Failed to assign driver");
+    },
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -90,21 +123,13 @@ const assignDriver = async (busId: string, driverId: string) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await createBus({
-        name: formData.name,
-        busNumber: formData.number,
-        capacity: Number(formData.capacity),
-        driverId: formData.driverId,
-      });
-      toast.success("Bus added successfully");
-      resetForm();
-      fetchBuses();
-      return true;
-    } catch (err) {
-      toast.error("Failed to add bus. Please try again.");
-      return false;
-    }
+    await createBusMutation.mutateAsync({
+      name: formData.name,
+      busNumber: formData.number,
+      capacity: Number(formData.capacity),
+      driverId: formData.driverId,
+    });
+    resetForm();
   };
 
   const resetForm = () => {
@@ -114,15 +139,27 @@ const assignDriver = async (busId: string, driverId: string) => {
   return {
     buses,
     drivers,
-    loading,
+    loading: busesLoading || driversLoading,
+    busesLoading,
+    driversLoading,
+    busesError,
+    driversError,
     formData,
     setFormData,
     handleChange,
     handleSubmit,
     resetForm,
-    fetchBuses,
-    updateExistingBus,
-    removeBus,
-    assignDriver
+    fetchBuses: refetchBuses,
+    fetchDrivers: refetchDrivers,
+    updateExistingBus: (id: string, data: any) => 
+      updateBusMutation.mutateAsync({ id, data }),
+    removeBus: (id: string) => deleteBusMutation.mutateAsync(id),
+    assignDriver: (busId: string, driverId: string) => 
+      assignDriverMutation.mutateAsync({ busId, driverId }),
+    
+    isCreating: createBusMutation.isPending,
+    isUpdating: updateBusMutation.isPending,
+    isDeleting: deleteBusMutation.isPending,
+    isAssigning: assignDriverMutation.isPending,
   };
 };

@@ -1,32 +1,8 @@
 import { Bus, MapPin, TrendingUp, User } from "lucide-react";
-import { useEffect, useState } from "react";
-import {getAllDrivers } from "../../api/drivers";
-import {getAllBuses } from "../../api/buses";
-import { getAllRoutes } from "../../api/routes";
-
+import { useDashboard } from "../../hooks/useDashboard";
 
 const Dashboard = () => {
-  const [busCount, setBusCount] = useState(0);
-  const [driverCount, setDriverCount] = useState(0);
-  const [routeCount, setRouteCount] = useState(0);
-
-  useEffect(() => {
-    fetchCounts();
-  }, []);
-
-  const fetchCounts = async () => {
-  try {
-    const { data: buses } = await getAllBuses();
-    const { data: drivers } = await getAllDrivers();
-    const { data: routes } = await getAllRoutes();
-    setBusCount(buses.length);
-    setDriverCount(drivers.length);
-    setRouteCount(routes.length);
-  } catch (err) {
-    setBusCount(0);
-    setDriverCount(0);
-  }
-};
+  const { busCount, driverCount, routeCount, loading } = useDashboard();
 
   return (
     <div className="p-2">
@@ -42,7 +18,9 @@ const Dashboard = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Buses</p>
-              <p className="text-2xl font-bold text-gray-900">{busCount}</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {loading ? "..." : busCount}
+              </p>
             </div>
           </div>
         </div>
@@ -53,7 +31,9 @@ const Dashboard = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Drivers</p>
-              <p className="text-2xl font-bold text-gray-900">{driverCount}</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {loading ? "..." : driverCount}
+              </p>
             </div>
           </div>
         </div>
@@ -64,7 +44,9 @@ const Dashboard = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Routes</p>
-              <p className="text-2xl font-bold text-gray-900">{routeCount}</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {loading ? "..." : routeCount}
+              </p>
             </div>
           </div>
         </div>
