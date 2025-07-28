@@ -25,9 +25,7 @@ export const useBuses = () => {
     queryFn: async () => {
       const response = await getAllBuses();
       return response.data || [];
-    },
-    staleTime: 0, 
-    gcTime: 5 * 60 * 1000, 
+    }, 
   });
 
   // Fetch Drivers

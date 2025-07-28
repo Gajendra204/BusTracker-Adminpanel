@@ -20,8 +20,6 @@ export const useDrivers = () => {
       const response = await getAllDrivers();
       return response.data || [];
     },
-    staleTime: 5 * 60 * 1000, 
-    gcTime: 10 * 60 * 1000, 
   });
 
   // Create Driver

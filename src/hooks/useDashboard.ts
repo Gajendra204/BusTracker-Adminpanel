@@ -15,8 +15,6 @@ export const useDashboard = () => {
       const response = await getAllBuses();
       return response.data || [];
     },
-    staleTime: 5 * 60 * 1000, 
-    gcTime: 10 * 60 * 1000, 
   });
 
   // Fetch Drivers Count
@@ -30,8 +28,6 @@ export const useDashboard = () => {
       const response = await getAllDrivers();
       return response.data || [];
     },
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
   });
 
   // Fetch Routes Count
@@ -45,8 +41,6 @@ export const useDashboard = () => {
       const response = await getAllRoutes();
       return response.data || [];
     },
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
   });
 
   return {
