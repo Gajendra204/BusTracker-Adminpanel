@@ -8,10 +8,14 @@ import StudentForm from "./StudentForm";
 import StudentTable from "./StudentTable";
 import ClassFilterDropdown from "./ClassFilterDropdown";
 import DeleteConfirmationModal from "../../Shared/DeleteConfirmationModal";
+import type { IStudent } from "../../../api/types";
 
 const StudentsByRoute = () => {
   const { routeId } = useParams();
-  const { routes } = useRoutes();
+  const {
+    routes,
+    fetchRoutes,
+  } = useRoutes();
   const {
     students,
     isLoading,
@@ -27,6 +31,12 @@ const StudentsByRoute = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const currentRoute = routes?.find((r) => r._id === routeId);
+
+  useEffect(() => {
+    if (!routes || routes.length === 0) {
+      fetchRoutes();
+    }
+  }, []);
 
   useEffect(() => {
     if (routeId) {
@@ -51,6 +61,7 @@ const StudentsByRoute = () => {
   if (!routeId) return <div>Route ID not provided</div>;
   if (isLoading) return <div>Loading students...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
+  if (!routes || routes.length === 0) return <div>Loading routes...</div>;
 
   return (
     <div className="p-4">
@@ -86,9 +97,11 @@ const StudentsByRoute = () => {
       <StudentTable
         students={students}
         loading={isLoading}
-        onDelete={(id) => {
-          setStudentToDelete(id);
-          setShowDeleteConfirm(true);
+        onDelete={(student: IStudent) => {
+          if (student && student._id) {
+            setStudentToDelete(student._id);
+            setShowDeleteConfirm(true);
+          }
         }}
       />
     </div>
