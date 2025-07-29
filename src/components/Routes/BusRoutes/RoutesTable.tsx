@@ -13,8 +13,6 @@ interface RoutesTableProps {
   onDelete: (routeId: string) => void;
   assignBus: (routeId: string, data: { busId: string }) => Promise<any>;
   assignDriver: (busId: string, driverId: string) => Promise<any>;
-  fetchRoutes: () => Promise<any>;
-  fetchBuses: () => Promise<any>;
   loading?: boolean;
 }
 
@@ -30,8 +28,6 @@ const RoutesTable: React.FC<RoutesTableProps> = ({
   onDelete,
   assignBus,
   assignDriver,
-  fetchRoutes,
-  fetchBuses,
   loading,
 }) => {
   return (
@@ -87,8 +83,6 @@ const RoutesTable: React.FC<RoutesTableProps> = ({
                 onDelete={() => onDelete(route._id)}
                 assignBus={assignBus}
                 assignDriver={assignDriver}
-                fetchRoutes={fetchRoutes}
-                fetchBuses={fetchBuses}
               />
             ))
           )}

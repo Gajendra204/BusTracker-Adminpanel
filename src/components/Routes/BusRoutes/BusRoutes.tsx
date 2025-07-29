@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useRoutes } from "../../../hooks/useRoutes";
 import { useBuses } from "../../../hooks/useBuses";
@@ -9,16 +9,9 @@ import { useRouteAssignments } from "../../../hooks/useRouteAssignments";
 import RoutesTable from "./RoutesTable";
 
 const BusRoutes = () => {
-  const {
-    routes,
-    isLoading,
-    error,
-    fetchRoutes,
-    addRoute,
-    removeRoute,
-    assignBus,
-  } = useRoutes();
-  const { buses, drivers, assignDriver, fetchBuses } = useBuses();
+  const { routes, isLoading, error, addRoute, removeRoute, assignBus } =
+    useRoutes();
+  const { buses, drivers, assignDriver } = useBuses();
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [routeToDelete, setRouteToDelete] = useState<null | string>(null);
@@ -30,10 +23,6 @@ const BusRoutes = () => {
     handleBusSelect,
     handleDriverChange,
   } = useRouteAssignments(routes, buses);
-
-  useEffect(() => {
-    fetchRoutes();
-  }, []);
 
   const handleCreateRoute = async (formData: any) => {
     try {
@@ -49,7 +38,6 @@ const BusRoutes = () => {
     if (busId) {
       try {
         await assignBus(routeId, { busId });
-        fetchRoutes();
       } catch (err) {
         console.error("Failed to assign bus:", err);
       }
@@ -109,7 +97,11 @@ const BusRoutes = () => {
       {isLoading ? (
         <p>Loading routes...</p>
       ) : error ? (
-        <p className="text-red-500">{error}</p>
+        <p className="text-red-500">
+          {typeof error === "object" && error !== null && "message" in error
+            ? error.message
+            : error}
+        </p>
       ) : (
         <RoutesTable
           routes={routes}
@@ -123,8 +115,6 @@ const BusRoutes = () => {
           onDelete={handleDelete}
           assignBus={assignBus}
           assignDriver={assignDriver}
-          fetchRoutes={fetchRoutes}
-          fetchBuses={fetchBuses}
           loading={isLoading}
         />
       )}

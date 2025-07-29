@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Plus } from "lucide-react";
-import { useStudents } from "../../../hooks/useStudents";
+import { useStudents, useStudentsByRoute } from "../../../hooks/useStudents";
 import { useRoutes } from "../../../hooks/useRoutes";
 import Button from "../../Shared/Button";
 import StudentForm from "./StudentForm";
@@ -12,42 +12,25 @@ import type { IStudent } from "../../../api/types";
 
 const StudentsByRoute = () => {
   const { routeId } = useParams();
-  const {
-    routes,
-    fetchRoutes,
-  } = useRoutes();
-  const {
-    students,
-    isLoading,
-    error,
-    fetchStudentsByRoute,
-    addStudent,
-    deleteStudent,
-  } = useStudents();
-
+  const { routes } = useRoutes();
+  const { addStudent, deleteStudent } = useStudents();
   const [selectedClass, setSelectedClass] = useState<number | "">("");
   const [showAddForm, setShowAddForm] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const currentRoute = routes?.find((r) => r._id === routeId);
+  const { students, isLoading, error, refetch } = useStudentsByRoute(
+    routeId!,
+    selectedClass || undefined
+  );
 
-  useEffect(() => {
-    if (!routes || routes.length === 0) {
-      fetchRoutes();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (routeId) {
-      fetchStudentsByRoute(routeId, selectedClass || undefined);
-    }
-  }, [routeId, selectedClass]);
+  const currentRoute = routes?.find((r: any) => r._id === routeId);
 
   const handleAddStudent = async (studentData: any) => {
     if (!routeId) return;
-    await addStudent({ ...studentData, routeId });
+    await addStudent(routeId, { ...studentData, routeId });
     setShowAddForm(false);
+    refetch();
   };
 
   const handleDeleteStudent = async () => {
@@ -55,12 +38,20 @@ const StudentsByRoute = () => {
       await deleteStudent(studentToDelete);
       setShowDeleteConfirm(false);
       setStudentToDelete(null);
+      refetch();
     }
   };
 
   if (!routeId) return <div>Route ID not provided</div>;
   if (isLoading) return <div>Loading students...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (error)
+    return (
+      <div className="text-red-500">
+        {typeof error === "object" && error !== null && "message" in error
+          ? error.message
+          : error}
+      </div>
+    );
   if (!routes || routes.length === 0) return <div>Loading routes...</div>;
 
   return (

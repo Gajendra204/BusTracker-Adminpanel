@@ -16,8 +16,6 @@ interface RouteRowProps {
   onDelete: () => void;
   assignBus: (routeId: string, data: { busId: string }) => Promise<any>;
   assignDriver: (busId: string, driverId: string) => Promise<any>;
-  fetchRoutes: () => Promise<any>;
-  fetchBuses: () => Promise<any>;
 }
 
 const RouteRow = ({
@@ -29,8 +27,6 @@ const RouteRow = ({
   onDelete,
   assignBus,
   assignDriver,
-  fetchRoutes,
-  fetchBuses,
 }: RouteRowProps) => {
   const [isManageModalOpen, setIsManageModalOpen] = useState(false);
   const [isRouteModalOpen, setIsRouteModalOpen] = useState(false);
@@ -65,8 +61,6 @@ const RouteRow = ({
     if (modalBus && modalDriver) {
       await assignDriver(modalBus, modalDriver);
     }
-    await fetchRoutes();
-    await fetchBuses();
     setIsManageModalOpen(false);
   };
 
