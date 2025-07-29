@@ -27,7 +27,10 @@ const StudentForm = ({ onCancel, onSubmit }: StudentFormProps) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-[100] bg-black bg-opacity-80">
+    <div
+      className="fixed inset-0 flex items-center justify-center z-[100]  bg-opacity-70"
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
+    >
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">Add New Student</h2>
         <form onSubmit={handleSubmit} className="space-y-4">

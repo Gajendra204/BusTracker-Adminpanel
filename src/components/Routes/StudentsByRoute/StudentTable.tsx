@@ -14,6 +14,14 @@ const StudentTable = ({ students, onDelete, onEdit, loading }: Props) => {
     { label: "Class", render: (student: IStudent) => `Class ${student.class}` },
     { label: "Parent", render: (student: IStudent) => student.parentName },
     { label: "Phone", render: (student: IStudent) => student.parentPhone },
+    {
+      label: "Pickup Location",
+      render: (student: IStudent) => student.pickupLocation,
+    },
+    {
+      label: "Dropoff Location",
+      render: (student: IStudent) => student.dropoffLocation,
+    },
   ];
 
   return (

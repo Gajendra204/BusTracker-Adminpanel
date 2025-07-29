@@ -79,7 +79,8 @@ export interface IStudent {
   routeId: string;
   parentName: string;
   parentPhone: string;
-  address: string;
+  pickupLocation: string;
+  dropoffLocation: string;
   createdAt?: string | Date;
   updatedAt?: string | Date;
 }
@@ -90,5 +91,6 @@ export interface CreateStudentData {
   routeId: string;
   parentName: string;
   parentPhone: string;
-  address: string;
+  pickupLocation: string;
+  dropoffLocation: string;
 }

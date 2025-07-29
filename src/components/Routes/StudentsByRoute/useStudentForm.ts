@@ -6,7 +6,8 @@ export const useStudentForm = () => {
     class: 1,
     parentName: "",
     parentPhone: "",
-    address: "",
+    pickupLocation: "",
+    dropoffLocation: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -17,7 +18,8 @@ export const useStudentForm = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = "Name is required";
     if (!formData.parentName.trim()) newErrors.parentName = "Parent name is required";
-    if (!formData.address.trim()) newErrors.address = "Address is required";
+    if (!formData.pickupLocation.trim()) newErrors.pickupLocation = "Pickup location is required";
+    if (!formData.dropoffLocation.trim()) newErrors.dropoffLocation = "Dropoff location is required";
     if (!validatePhone(formData.parentPhone)) newErrors.parentPhone = "Enter valid 10-digit phone";
 
     setErrors(newErrors);
