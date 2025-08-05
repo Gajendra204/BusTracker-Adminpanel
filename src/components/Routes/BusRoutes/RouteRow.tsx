@@ -1,6 +1,15 @@
-import { Users, MapPin } from "lucide-react";
+import {
+  Users,
+  MapPin,
+  Settings,
+  Edit,
+  Trash,
+  MoreVertical,
+  MoreHorizontal,
+  EllipsisVertical,
+} from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 import RouteManageModal from "./RouteManageModal";
 
@@ -35,6 +44,26 @@ const RouteRow = ({
   const [modalDriver, setModalDriver] = useState(selectedDriver);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(false);
+
+  // Handle clicking outside dropdown to close it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   const handleManageClick = () => {
     setModalBus(selectedBus);
@@ -108,41 +137,55 @@ const RouteRow = ({
             </div>
           </div>
         </td>
-        <td className="px-6 py-4 text-sm flex ">
-          <Link
-            className="text-gray-700 hover:text-blue-900 mr-3 mt-2"
-            title="View Students"
-            to={`/routes/${route._id}/students`}
-          >
-            <Users className="w-4 h-4" />
-          </Link>
-          <button
-            className="text-gray-700 hover:text-gray-900 mr-3 px-3 py-1 border border-gray-300 rounded text-sm"
-            onClick={handleManageClick}
-          >
-            Manage
-          </button>
+        <td className="px-6 py-4 text-sm">
           <div className="relative" ref={dropdownRef}>
             <button
-              className="text-gray-600 hover:text-gray-900 mr-3 px-2 rounded-full"
+              className="text-gray-600 hover:text-gray-900 px-3 py-1 rounded text-sm"
               onClick={() => setIsDropdownOpen((open) => !open)}
               aria-label="Actions"
             >
-              <span style={{ fontSize: 20, fontWeight: "bold" }}>⋮</span>
+              <EllipsisVertical className="w-5 h-5" />
             </button>
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded shadow-lg z-50">
+              <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-90">
+                <Link
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  to={`/routes/${route._id}/students`}
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  <Users className="w-4 h-4 inline mr-2" />
+                  View Students
+                </Link>
                 <button
                   className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  onClick={handleRouteEdit}
+                  onClick={() => {
+                    handleManageClick();
+                    setIsDropdownOpen(false);
+                  }}
                 >
-                  Edit Route
+                  <Settings className="w-4 h-4 inline mr-2" />
+                  Manage Assignments
                 </button>
                 <button
-                  className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                  onClick={handleDeleteClick}
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  onClick={() => {
+                    handleRouteEdit();
+                    setIsDropdownOpen(false);
+                  }}
                 >
-                  Delete
+                  <Edit className="w-4 h-4 inline mr-2" />
+                  Edit Route
+                </button>
+                <hr className="my-1" />
+                <button
+                  className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                  onClick={() => {
+                    handleDeleteClick();
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  <Trash className="w-4 h-4 inline mr-2" />
+                  Delete Route
                 </button>
               </div>
             )}

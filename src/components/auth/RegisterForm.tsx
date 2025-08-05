@@ -26,7 +26,6 @@ const RegisterForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-
     if (formData.password.length < 6) {
       toast.error("Password must be at least 6 characters");
       return;
